@@ -14,17 +14,17 @@ import (
 	"strings"
 )
 
-func getNtlmV2Hash(password, username, target string) []byte {
+func GetNtlmV2Hash(password, username, target string) []byte {
 	return hmacMd5(getNtlmHash(password), toUnicode(strings.ToUpper(username)+target))
 }
 
-func getNtlmHash(password string) []byte {
+func GetNtlmHash(password string) []byte {
 	hash := md4.New()
 	hash.Write(toUnicode(password))
 	return hash.Sum(nil)
 }
 
-func computeNtlmV2Response(ntlmV2Hash, serverChallenge, clientChallenge,
+func ComputeNtlmV2Response(ntlmV2Hash, serverChallenge, clientChallenge,
 	timestamp, targetInfo []byte) []byte {
 
 	temp := []byte{1, 1, 0, 0, 0, 0, 0, 0}
@@ -38,11 +38,11 @@ func computeNtlmV2Response(ntlmV2Hash, serverChallenge, clientChallenge,
 	return append(NTProofStr, temp...)
 }
 
-func computeLmV2Response(ntlmV2Hash, serverChallenge, clientChallenge []byte) []byte {
+func ComputeLmV2Response(ntlmV2Hash, serverChallenge, clientChallenge []byte) []byte {
 	return append(hmacMd5(ntlmV2Hash, serverChallenge, clientChallenge), clientChallenge...)
 }
 
-func hmacMd5(key []byte, data ...[]byte) []byte {
+func HmacMd5(key []byte, data ...[]byte) []byte {
 	mac := hmac.New(md5.New, key)
 	for _, d := range data {
 		mac.Write(d)
